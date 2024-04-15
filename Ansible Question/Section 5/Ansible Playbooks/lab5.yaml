@@ -1,0 +1,85 @@
+#Update the name of the play in /home/bob/playbooks/playbook.yaml playbook to Execute a date command on localhost.
+
+
+---
+- name: 'Execute a date command on localhost'
+  hosts: localhost
+  become: yes
+  tasks:
+     - name: 'Execute a date command'
+       command: date
+
+Update the playbook /home/bob/playbooks/playbook.yaml to add a task name Task to display hosts file for the existing task
+---
+- name: 'Execute a command to display hosts file on localhost'
+  hosts: localhost
+  become: yes
+  tasks:
+     - name: 'Task to display hosts file'
+       command: 'cat /etc/hosts'
+
+
+#We have reset the playbook /home/bob/playbooks/playbook.yaml, now update it to add another task. The new task must execute the command cat /etc/resolv.conf and set its name to Task to display nameservers
+
+---
+- name: 'Execute two commands on localhost'
+  hosts: localhost
+  become: yes
+  tasks:
+     - name: 'Execute a date command'
+       command: date
+     - name: 'Task to display nameservers'
+       command: 'cat /etc/resolv.conf'
+
+#So far, we have been running all tasks on localhost. We would now like to run these tasks on node01, this host is already defined in /home/bob/playbooks/inventory file. Update the playbook /home/bob/playbooks/playbook.yaml to run the tasks on the node01 host.
+---
+- name: 'Execute two commands on node01'
+  hosts: node01
+  tasks:
+     - name: 'Execute a date command'
+       command: date
+     - name: 'Execute a command to display hosts file'
+       command: 'cat /etc/hosts'
+
+Run the playbook.
+
+ansible-playbook -i inventory playbook.yaml
+
+#Refer to the /home/bob/playbooks/inventory file. We would like to run the /home/bob/playbooks/playbook.yaml on all servers defined under web_nodes group.
+
+
+#Note: Use the group name in playbook as defined in the inventory file.
+---
+- name: 'Execute two commands on web_node1'
+  hosts: web_nodes
+  tasks:
+     - name: 'Execute a date command'
+       command: date
+     - name: 'Execute a command to display hosts file'
+       command: 'cat /etc/hosts'
+
+
+#Update the /home/bob/playbooks/playbook.yaml to add a new play named Execute a command on node02, and a task under it to execute cat /etc/hosts command on node02 host, name the task Task to display hosts file on node02.
+
+
+#Refer to the given inventory file
+
+---
+- name: 'Execute two commands on node01'
+  hosts: node01
+  become: yes
+  tasks:
+    - name: 'Execute a date command'
+      command: date
+    - name: 'Task to display hosts file on node01'
+      command: 'cat /etc/hosts'
+- name: 'Execute a command on node02'
+  hosts: node02
+  become: yes
+  tasks:
+     - name: 'Task to display hosts file on node02'
+
+       command: 'cat /etc/hosts'
+
+
+

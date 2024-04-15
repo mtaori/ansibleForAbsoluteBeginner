@@ -1,0 +1,93 @@
+#Update the playbook named playbook.yaml under /home/bob/playbooks directory with a task named Execute a script to run a script. The script is located at /tmp/install_script.sh on student-node.
+
+#Use the script module.
+
+
+
+#Note: There is already an inventory file /home/bob/playbooks/inventory present on student-node system.
+
+
+Answer
+---
+- name: 'hosts'
+  hosts: all
+  become: yes
+  tasks:
+     - name: 'Execute a script'
+       command: '/tmp/install_script.sh
+       
+#Update the playbook /home/bob/playbooks/playbook.yaml to add a new task to start httpd service on all web nodes defined in /home/bob/playbooks/inventory file.
+
+
+#Use the service module.
+
+---
+- name: 'hosts'
+  hosts: all
+  become: yes
+  tasks:
+    - name: 'Execute a script'
+      script: '/tmp/install_script.sh'
+    - name: 'Start httpd service'
+      service:
+         name: 'httpd'
+         state: 'started'
+
+
+
+#Update the playbook /home/bob/playbooks/playbook.yaml to append the /var/www/html/index.html file on all web nodes. The line needs to be added is Welcome to ansible-beginning course, create the index.html file if doesn't exist.
+
+
+
+#Use the lineinfile module.
+---
+- name: 'hosts'
+  hosts: all
+  become: yes
+  tasks:
+    - name: 'Execute a script'
+      script: '/tmp/install_script.sh'
+    - name: 'Start httpd service'
+      service:
+         name: 'httpd'
+         state: 'started'
+    - name: 'create and update index.html file'
+      lineinfile:
+        path: /var/www/html/index.html
+        line: "Welcome to ansible-beginning course"
+        create: true
+        
+        
+        
+        
+#Update the playbook /home/bob/playbooks/playbook.yaml to add a new task to create a new user called web_user.
+
+#Use the user module for this task. You can find the user details as below.
+
+Username: web_user
+uid: 1040
+group: developers
+
+     
+        
+        ---
+- name: 'hosts'
+  hosts: all
+  become: yes
+  tasks:
+    - name: 'Execute a script'
+      script: '/tmp/install_script.sh'
+    - name: 'Start httpd service'
+      service:
+        name: 'httpd'
+        state: 'started'
+    - name: "Update /var/www/html/index.html"
+      lineinfile:
+        path: /var/www/html/index.html
+        line: "Welcome to ansible-beginning course"
+        create: true
+    - name: 'Create a new user'
+      user:
+        name: 'web_user'
+        uid: 1040
+        group: 'developers'

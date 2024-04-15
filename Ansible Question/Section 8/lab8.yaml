@@ -1,0 +1,94 @@
+#There is a jinja2 template named /home/bob/playbooks/upper/templates/student.txt.j2 present on the student-node. Update this template to display the value of student variable in UPPERCASE.
+
+
+
+#Example Data:
+
+#{
+  #"name": "David"
+#}
+`
+
+
+#Expected output:
+
+#The student name is DAVID
+
+The student name is {{ student | upper }}
+
+
+
+#There is a template named /home/bob/playbooks/replace/templates/name.txt.j2 on student-node. Similarly, there is a playbook named /home/bob/playbooks/replace/playbook.yml on student-node itself.
+
+
+
+#Update this playbook to generate a file named /tmp/name.txt on student-node from the given jinja2 template, and make sure to fix the dialogue where string Bourne must be replaced with string Bond.
+
+
+{{ dialogue | replace('Bourne', 'Bond') }}
+
+---
+- hosts: localhost
+  connection: local
+  vars:
+    dialogue: "The name is Bourne, James Bourne!"
+  tasks:
+    - template:
+        src: name.txt.j2
+        dest: /tmp/name.tx
+        
+        
+        
+#A monitoring server (node01) has newly been introduced in your environment. We need to update the agents.conf file with a list of servers in the environment and their details.
+
+
+
+#Navigate to the /home/bob/playbooks/monitoring-server directory. The list of servers is given in the inventory file under group lamp_app. This information must be used to generate an agents.conf file at /etc/agents.conf location on the monitoring_server i.e node01.
+
+
+#Update the generate-agent-info.yml playbook. Use the given template file /home/bob/playbooks/monitoring-server/templates/agents.conf.j2. Moreover, a sample output file name /home/bob/playbooks/monitoring-server/templates/agents.conf.j2 is also given for your reference. The target servers are not up yet, so don't try to connect to them. Just use their details given in the inventory file.     
+        
+   
+        
+hostname, ipaddress, monitor_port, type, protocol
+{% for host in groups['lamp_app'] %}
+{{ host }}, {{ hostvars[host]['ansible_host'] }}, {{ hostvars[host]['monitor_port'] }}, {{ hostvars[host]['protocol'] }}
+{% endfor %}
+ 
+ 
+ 
+ ---
+- hosts: monitoring_server
+  become: yes
+  tasks:
+    - template:
+        src: agents.conf.j2
+        dest: /etc/agents.conf
+        
+        
+#Navigate to /home/bob/playbooks/inventory/ directory. A report template named inventory.csv.j2 is given under the templates directory.
+
+
+#Update the template to print the requested details of all hosts defined in /home/bob/playbooks/inventory/inventory file. Further update /home/bob/playbooks/inventory/generate-inventory.yml playbook to generate the report and place it on the student-node node at /tmp/inventory.csv.      
+        
+        
+ 
+hostname, architecture, distribution_version, mem_total_mb, processor_cores, processor_count
+{% for host in groups['web'] %}
+{{ host }}, {{ hostvars[host]['ansible_architecture'] }}, {{ hostvars[host]['ansible_distribution_version'] }}, {{ hostvars[host]['ansible_memtotal_mb'] }}, {{ hostvars[host]['ansible_processor_cores'] }}, {{ hostvars[host]['ansible_processor_count'] }}
+{% endfor %}
+
+- hosts: all
+  tasks:
+  - setup:
+
+- hosts: localhost
+  tasks:
+    - template:
+        src: inventory.csv.j2
+        dest: /tmp/inventory.csv
+      run_once: yes
+
+
+
+        
